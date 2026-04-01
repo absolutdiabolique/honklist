@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HONK DEMONLIST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #18181f;
+      --border: #2a2a3a;
+      --accent: #ff3f00;
+      --accent2: #ff8800;
+      --gold: #ffd700;
+      --text: #e8e8f0;
+      --muted: #6a6a80;
+      --green: #00e676;
+      --rank-w: 60px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── SCANLINE OVERLAY ── */
+    body::before {
+      content: '';
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.18) 2px,
+        rgba(0,0,0,0.18) 4px
+      );
+      z-index: 9999;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      overflow: hidden;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,63,0,0.18) 0%, transparent 70%);
+    }
+
+    .site-title {
+      font-family: 'Black Ops One', cursive;
+      font-size: clamp(3rem, 10vw, 7rem);
+      letter-spacing: 0.08em;
+      line-height: 1;
+      color: var(--accent);
+      text-shadow:
+        0 0 20px rgba(255,63,0,0.7),
+        0 0 60px rgba(255,63,0,0.3),
+        4px 4px 0 #000;
+      position: relative;
+    }
+
+    .site-subtitle {
+      font-family: 'Bebas Neue', cursive;
+      font-size: clamp(1rem, 3vw, 1.6rem);
+      letter-spacing: 0.4em;
+      color: var(--accent2);
+      margin-top: 0.3rem;
+      position: relative;
+    }
+
+    .honk-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      filter: drop-shadow(0 0 12px rgba(255,136,0,0.8));
+      animation: bob 2.4s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: 1rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .stats-bar span strong {
+      color: var(--accent2);
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .section-label {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.9rem;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── LEADERBOARD ── */
+    .leaderboard {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .level-card {
+      display: grid;
+      grid-template-columns: var(--rank-w) 1fr auto;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      padding: 0.85rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+      overflow: hidden;
+      gap: 1rem;
+    }
+
+    .level-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255,63,0,0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .level-card:hover {
+      border-color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--surface2);
+    }
+
+    .level-card:hover::before { opacity: 1; }
+
+    /* Rank coloring */
+    .level-card[data-rank="1"] { border-left-color: var(--gold); }
+    .level-card[data-rank="2"] { border-left-color: #c0c0c0; }
+    .level-card[data-rank="3"] { border-left-color: #cd7f32; }
+
+    .rank {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.8rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1;
+    }
+
+    .level-card[data-rank="1"] .rank { color: var(--gold); text-shadow: 0 0 12px rgba(255,215,0,0.5); }
+    .level-card[data-rank="2"] .rank { color: #c0c0c0; }
+    .level-card[data-rank="3"] .rank { color: #cd7f32; }
+
+    .level-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 0;
+    }
+
+    .level-title {
+      font-family: 'Black Ops One', cursive;
+      font-size: 1.1rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.03em;
+    }
+
+    .level-tags {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 2px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .tag-diff {
+      background: rgba(255,63,0,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(255,63,0,0.3);
+    }
+
+    .rate-display {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .rate-number {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .rate-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+
+    /* Color the rate by difficulty */
+    .rate-extreme { color: var(--accent); text-shadow: 0 0 10px rgba(255,63,0,0.6); }
+    .rate-hard    { color: #ff6b00; }
+    .rate-medium  { color: var(--accent2); }
+    .rate-easy    { color: var(--green); }
+
+    /* ── DETAIL PANEL ── */
+    .detail-panel {
+      display: none;
+      background: var(--surface2);
+      border: 1px solid var(--accent);
+      border-top: none;
+      padding: 1.2rem 1.4rem 1.4rem;
+      margin-top: -0.4rem;
+      margin-bottom: 0.4rem;
+      animation: slideDown 0.2s ease;
+    }
+
+    .detail-panel.open { display: block; }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .detail-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .detail-stat-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .detail-stat-value {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.5rem;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      padding: 0.4rem 1rem;
+      border: 1px solid;
+      background: transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    /* ── ERROR / EMPTY ── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+
+    .empty-state .big {
+      font-family: 'Black Ops One', cursive;
+      font-size: 2.5rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── DIFFICULTY BADGE ── */
+    .diff-badge {
+      display: inline-block;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      padding: 0.15rem 0.55rem;
+      border-radius: 2px;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 520px) {
+      .stats-bar { gap: 1.5rem; flex-wrap: wrap; }
+      .level-card { grid-template-columns: 40px 1fr auto; gap: 0.6rem; }
+      .rank { font-size: 1.4rem; }
+      .rate-number { font-size: 1.4rem; }
+      .level-title { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="honk-icon">🐦</span>
+    <h1 class="site-title">DEMONLIST</h1>
+    <p class="site-subtitle">HONK · RANKED BY DIFFICULTY</p>
+  </header>
+
+  <div class="stats-bar" id="statsBar">
+    <span>LEVELS: <strong id="totalLevels">—</strong></span>
+    <span>HARDEST: <strong id="hardestLevel">—</strong></span>
+    <span>TOTAL ATTEMPTS: <strong id="totalAttempts">—</strong></span>
+  </div>
+
+  <main class="container">
+    <p class="section-label">RANKED LEVELS</p>
+    <div class="leaderboard" id="leaderboard">
+      <div class="loading">LOADING DEMONLIST...</div>
+    </div>
+  </main>
+
+  <footer>
+    HONK DEMONLIST &mdash; STATS POWERED BY u/flappy-goose &mdash; NOT AFFILIATED WITH HONK
+  </footer>
+
+  <script>
+    function difficultyLabel(rate) {
+      if (rate === null || rate === undefined) return { label: 'UNKNOWN', cls: '' };
+      if (rate < 0.5)  return { label: 'EXTREME',  cls: 'rate-extreme' };
+      if (rate < 2)    return { label: 'INSANE',   cls: 'rate-extreme' };
+      if (rate < 5)    return { label: 'HARD',     cls: 'rate-hard'    };
+      if (rate < 15)   return { label: 'MEDIUM',   cls: 'rate-medium'  };
+      return              { label: 'EASY',     cls: 'rate-easy'    };
+    }
+
+    function fmtNum(n) {
+      if (n === undefined || n === null) return '—';
+      return n.toLocaleString();
+    }
+
+    function fmtRate(r) {
+      if (r === undefined || r === null) return '—%';
+      return r + '%';
+    }
+
+    function fmtTime(t) {
+      if (!t) return '—';
+      return t + 's';
+    }
+
+    function toggleDetail(id) {
+      const panel = document.getElementById('panel-' + id);
+      const card  = document.getElementById('card-' + id);
+      const isOpen = panel.classList.contains('open');
+
+      // Close all
+      document.querySelectorAll('.detail-panel.open').forEach(p => p.classList.remove('open'));
+
+      if (!isOpen) {
+        panel.classList.add('open');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    async function loadList() {
+      const board = document.getElementById('leaderboard');
+
+      let levels;
+      try {
+        const res = await fetch('data/stats.json');
+        levels = await res.json();
+      } catch (e) {
+        board.innerHTML = `
+          <div class="empty-state">
+            <span class="big">NO DATA</span>
+            Run <code>python scripts/scrape.py</code> to populate stats.json
+          </div>`;
+        return;
+      }
+
+      if (!levels || levels.length === 0) {
+        board.innerHTML = `<div class="empty-state"><span class="big">EMPTY LIST</span>Add levels to data/levels.txt and run the scraper.</div>`;
+        return;
+      }
+
+      // Sort by success rate ascending (hardest first), errors last
+      levels.sort((a, b) => {
+        const ra = a.success_rate ?? Infinity;
+        const rb = b.success_rate ?? Infinity;
+        return ra - rb;
+      });
+
+      // Update stats bar
+      const validLevels = levels.filter(l => l.success_rate != null);
+      document.getElementById('totalLevels').textContent = levels.length;
+      document.getElementById('hardestLevel').textContent = validLevels[0]?.title?.toUpperCase() ?? '—';
+      const totalAttempts = levels.reduce((s, l) => s + (l.attempts ?? 0), 0);
+      document.getElementById('totalAttempts').textContent = fmtNum(totalAttempts);
+
+      board.innerHTML = '';
+
+      levels.forEach((level, i) => {
+        const rank = i + 1;
+        const { label: diffLabel, cls: diffCls } = difficultyLabel(level.success_rate);
+        const hasError = !!level.error;
+
+        // CARD
+        const card = document.createElement('div');
+        card.className = 'level-card';
+        card.id = 'card-' + i;
+        card.setAttribute('data-rank', rank);
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-expanded', 'false');
+        card.onclick = () => toggleDetail(i);
+        card.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') toggleDetail(i); };
+
+        card.innerHTML = `
+          <div class="rank">#${rank}</div>
+          <div class="level-info">
+            <div class="level-title">${level.title || level.url}</div>
+            <div class="level-tags">
+              <span class="tag tag-diff">${diffLabel}</span>
+              ${level.first_completion ? `<span style="font-size:0.68rem;color:var(--muted)">🥇 ${level.first_completion}</span>` : ''}
+            </div>
+          </div>
+          <div class="rate-display">
+            <div class="rate-number ${diffCls}">${level.success_rate != null ? level.success_rate : '?'}</div>
+            <div class="rate-label">% SUCCESS</div>
+          </div>
+        `;
+
+        // DETAIL PANEL
+        const panel = document.createElement('div');
+        panel.className = 'detail-panel';
+        panel.id = 'panel-' + i;
+
+        if (hasError) {
+          panel.innerHTML = `<div style="color:var(--accent);font-size:0.8rem;">⚠ ${level.error}</div>`;
+        } else {
+          panel.innerHTML = `
+            <div class="detail-grid">
+              <div class="detail-stat">
+                <span class="detail-stat-label">⏱ Fastest Time</span>
+                <span class="detail-stat-value">${fmtTime(level.fastest_time)}</span>
+              </div>
+              <div class="detail-stat">
+                <span class="detail-stat-label">💀 Attempts</span>
+                <span class="detail-stat-value">${fmtNum(level.attempts)}</span>
+              </div>
+              <div class="detail-stat">
+                <span class="detail-stat-label">🏆 Completions</span>
+                <span class="detail-stat-value">${fmtNum(level.completions)}</span>
+              </div>
+              <div class="detail-stat">
+                <span class="detail-stat-label">📊 Success Rate</span>
+                <span class="detail-stat-value">${fmtRate(level.success_rate)}</span>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <a class="btn btn-primary" href="${level.url}" target="_blank" rel="noopener">VIEW ON REDDIT ↗</a>
+            </div>
+          `;
+        }
+
+        board.appendChild(card);
+        board.appendChild(panel);
+      });
+    }
+
+    loadList();
+  </script>
+</body>
+</html>
