@@ -17,8 +17,6 @@
       --gold: #ffd700;
       --text: #e8e8f0;
       --muted: #6a6a80;
-      --green: #00e676;
-      --rank-w: 60px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,7 +29,6 @@
       overflow-x: hidden;
     }
 
-    /* ── SCANLINE OVERLAY ── */
     body::before {
       content: '';
       pointer-events: none;
@@ -60,8 +57,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,63,0,0.18) 0%, transparent 70%);
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,63,0,0.18) 0%, transparent 70%);
     }
 
     .site-title {
@@ -96,7 +92,7 @@
 
     @keyframes bob {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      50%       { transform: translateY(-8px); }
     }
 
     /* ── STATS BAR ── */
@@ -110,11 +106,10 @@
       font-size: 0.8rem;
       color: var(--muted);
       letter-spacing: 0.1em;
+      flex-wrap: wrap;
     }
 
-    .stats-bar span strong {
-      color: var(--accent2);
-    }
+    .stats-bar span strong { color: var(--accent2); }
 
     /* ── LAYOUT ── */
     .container {
@@ -150,14 +145,14 @@
 
     .level-card {
       display: grid;
-      grid-template-columns: var(--rank-w) 1fr auto;
+      grid-template-columns: 60px 1fr auto;
       align-items: center;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-left: 3px solid transparent;
+      border-left: 3px solid var(--border);
       padding: 0.85rem 1.2rem;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: border-color 0.15s, background 0.15s;
       position: relative;
       overflow: hidden;
       gap: 1rem;
@@ -172,15 +167,16 @@
       transition: opacity 0.15s;
     }
 
-    .level-card:hover {
+    .level-card:hover,
+    .level-card:focus-visible {
       border-color: var(--accent);
       border-left-color: var(--accent);
       background: var(--surface2);
+      outline: none;
     }
 
     .level-card:hover::before { opacity: 1; }
 
-    /* Rank coloring */
     .level-card[data-rank="1"] { border-left-color: var(--gold); }
     .level-card[data-rank="2"] { border-left-color: #c0c0c0; }
     .level-card[data-rank="3"] { border-left-color: #cd7f32; }
@@ -200,7 +196,7 @@
     .level-info {
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 0.25rem;
       min-width: 0;
     }
 
@@ -214,24 +210,10 @@
       letter-spacing: 0.03em;
     }
 
-    .level-tags {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-
-    .tag {
+    .level-sub {
       font-size: 0.68rem;
-      padding: 0.1rem 0.5rem;
-      border-radius: 2px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .tag-diff {
-      background: rgba(255,63,0,0.15);
-      color: var(--accent);
-      border: 1px solid rgba(255,63,0,0.3);
+      color: var(--muted);
+      letter-spacing: 0.08em;
     }
 
     .rate-display {
@@ -241,8 +223,10 @@
 
     .rate-number {
       font-family: 'Bebas Neue', cursive;
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       line-height: 1;
+      color: var(--text);
+      letter-spacing: 0.02em;
     }
 
     .rate-label {
@@ -250,12 +234,6 @@
       color: var(--muted);
       letter-spacing: 0.12em;
     }
-
-    /* Color the rate by difficulty */
-    .rate-extreme { color: var(--accent); text-shadow: 0 0 10px rgba(255,63,0,0.6); }
-    .rate-hard    { color: #ff6b00; }
-    .rate-medium  { color: var(--accent2); }
-    .rate-easy    { color: var(--green); }
 
     /* ── DETAIL PANEL ── */
     .detail-panel {
@@ -266,7 +244,7 @@
       padding: 1.2rem 1.4rem 1.4rem;
       margin-top: -0.4rem;
       margin-bottom: 0.4rem;
-      animation: slideDown 0.2s ease;
+      animation: slideDown 0.18s ease;
     }
 
     .detail-panel.open { display: block; }
@@ -278,15 +256,9 @@
 
     .detail-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 1rem;
       margin-bottom: 1rem;
-    }
-
-    .detail-stat {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
     }
 
     .detail-stat-label {
@@ -294,45 +266,49 @@
       color: var(--muted);
       letter-spacing: 0.15em;
       text-transform: uppercase;
+      margin-bottom: 0.15rem;
     }
 
     .detail-stat-value {
       font-family: 'Bebas Neue', cursive;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       color: var(--text);
-      line-height: 1;
+      line-height: 1.2;
     }
 
-    .detail-actions {
-      display: flex;
-      gap: 0.8rem;
-      margin-top: 0.5rem;
-    }
+    .detail-actions { margin-top: 0.6rem; }
 
     .btn {
       font-family: 'Share Tech Mono', monospace;
       font-size: 0.75rem;
       letter-spacing: 0.1em;
       padding: 0.4rem 1rem;
-      border: 1px solid;
+      border: 1px solid var(--accent);
+      color: var(--accent);
       background: transparent;
       cursor: pointer;
       text-decoration: none;
-      transition: all 0.15s;
       display: inline-block;
+      transition: background 0.15s, color 0.15s;
     }
 
-    .btn-primary {
-      border-color: var(--accent);
-      color: var(--accent);
+    .btn:hover { background: var(--accent); color: #000; }
+
+    /* ── LOADING / EMPTY ── */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      animation: pulse 1.2s ease-in-out infinite;
     }
 
-    .btn-primary:hover {
-      background: var(--accent);
-      color: #000;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
     }
 
-    /* ── ERROR / EMPTY ── */
     .empty-state {
       text-align: center;
       padding: 4rem 2rem;
@@ -357,37 +333,12 @@
       letter-spacing: 0.12em;
     }
 
-    /* ── LOADING ── */
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: var(--muted);
-      font-size: 0.9rem;
-      letter-spacing: 0.2em;
-      animation: pulse 1.2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    /* ── DIFFICULTY BADGE ── */
-    .diff-badge {
-      display: inline-block;
-      font-family: 'Bebas Neue', cursive;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      padding: 0.15rem 0.55rem;
-      border-radius: 2px;
-    }
-
     /* ── MOBILE ── */
     @media (max-width: 520px) {
-      .stats-bar { gap: 1.5rem; flex-wrap: wrap; }
+      .stats-bar { gap: 1.5rem; }
       .level-card { grid-template-columns: 40px 1fr auto; gap: 0.6rem; }
       .rank { font-size: 1.4rem; }
-      .rate-number { font-size: 1.4rem; }
+      .rate-number { font-size: 1.1rem; }
       .level-title { font-size: 0.95rem; }
     }
   </style>
@@ -400,7 +351,7 @@
     <p class="site-subtitle">HONK · RANKED BY DIFFICULTY</p>
   </header>
 
-  <div class="stats-bar" id="statsBar">
+  <div class="stats-bar">
     <span>LEVELS: <strong id="totalLevels">—</strong></span>
     <span>HARDEST: <strong id="hardestLevel">—</strong></span>
     <span>TOTAL ATTEMPTS: <strong id="totalAttempts">—</strong></span>
@@ -414,45 +365,37 @@
   </main>
 
   <footer>
-    HONK DEMONLIST &mdash; STATS POWERED BY u/flappy-goose &mdash; NOT AFFILIATED WITH HONK
+    HONK DEMONLIST &mdash; STATS BY u/flappy-goose &mdash; NOT AFFILIATED WITH HONK
   </footer>
 
   <script>
-    function difficultyLabel(rate) {
-      if (rate === null || rate === undefined) return { label: 'UNKNOWN', cls: '' };
-      if (rate < 0.5)  return { label: 'EXTREME',  cls: 'rate-extreme' };
-      if (rate < 2)    return { label: 'INSANE',   cls: 'rate-extreme' };
-      if (rate < 5)    return { label: 'HARD',     cls: 'rate-hard'    };
-      if (rate < 15)   return { label: 'MEDIUM',   cls: 'rate-medium'  };
-      return              { label: 'EASY',     cls: 'rate-easy'    };
+    // Compute success rate as (completions / attempts) * 100,
+    // displayed to 5 significant figures.
+    function computeRate(attempts, completions) {
+      if (!attempts || attempts === 0) return null;
+      return (completions / attempts) * 100;
+    }
+
+    function fmtRate(attempts, completions) {
+      const r = computeRate(attempts, completions);
+      return r !== null ? r.toPrecision(5) + '%' : '—%';
     }
 
     function fmtNum(n) {
-      if (n === undefined || n === null) return '—';
-      return n.toLocaleString();
-    }
-
-    function fmtRate(r) {
-      if (r === undefined || r === null) return '—%';
-      return r + '%';
+      return n != null ? n.toLocaleString() : '—';
     }
 
     function fmtTime(t) {
-      if (!t) return '—';
-      return t + 's';
+      return t ? t + 's' : '—';
     }
 
-    function toggleDetail(id) {
-      const panel = document.getElementById('panel-' + id);
-      const card  = document.getElementById('card-' + id);
+    function toggleDetail(i) {
+      const panel = document.getElementById('panel-' + i);
       const isOpen = panel.classList.contains('open');
-
-      // Close all
       document.querySelectorAll('.detail-panel.open').forEach(p => p.classList.remove('open'));
-
       if (!isOpen) {
         panel.classList.add('open');
-        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        document.getElementById('card-' + i).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     }
 
@@ -462,32 +405,34 @@
       let levels;
       try {
         const res = await fetch('data/stats.json');
+        if (!res.ok) throw new Error();
         levels = await res.json();
-      } catch (e) {
-        board.innerHTML = `
-          <div class="empty-state">
-            <span class="big">NO DATA</span>
-            Run <code>python scripts/scrape.py</code> to populate stats.json
-          </div>`;
+      } catch {
+        board.innerHTML = `<div class="empty-state">
+          <span class="big">NO DATA</span>
+          Add entries to <code>data/stats.json</code> and push to GitHub.
+        </div>`;
         return;
       }
 
-      if (!levels || levels.length === 0) {
-        board.innerHTML = `<div class="empty-state"><span class="big">EMPTY LIST</span>Add levels to data/levels.txt and run the scraper.</div>`;
+      if (!levels?.length) {
+        board.innerHTML = `<div class="empty-state">
+          <span class="big">EMPTY LIST</span>
+          Add level entries to <code>data/stats.json</code>.
+        </div>`;
         return;
       }
 
-      // Sort by success rate ascending (hardest first), errors last
+      // Sort hardest first (lowest success rate = #1). Missing data goes last.
       levels.sort((a, b) => {
-        const ra = a.success_rate ?? Infinity;
-        const rb = b.success_rate ?? Infinity;
+        const ra = computeRate(a.attempts, a.completions) ?? Infinity;
+        const rb = computeRate(b.attempts, b.completions) ?? Infinity;
         return ra - rb;
       });
 
       // Update stats bar
-      const validLevels = levels.filter(l => l.success_rate != null);
       document.getElementById('totalLevels').textContent = levels.length;
-      document.getElementById('hardestLevel').textContent = validLevels[0]?.title?.toUpperCase() ?? '—';
+      document.getElementById('hardestLevel').textContent = (levels[0]?.title ?? '—').toUpperCase();
       const totalAttempts = levels.reduce((s, l) => s + (l.attempts ?? 0), 0);
       document.getElementById('totalAttempts').textContent = fmtNum(totalAttempts);
 
@@ -495,67 +440,59 @@
 
       levels.forEach((level, i) => {
         const rank = i + 1;
-        const { label: diffLabel, cls: diffCls } = difficultyLabel(level.success_rate);
-        const hasError = !!level.error;
+        const rateStr = fmtRate(level.attempts, level.completions);
 
-        // CARD
+        // Card
         const card = document.createElement('div');
         card.className = 'level-card';
         card.id = 'card-' + i;
         card.setAttribute('data-rank', rank);
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
-        card.setAttribute('aria-expanded', 'false');
         card.onclick = () => toggleDetail(i);
-        card.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') toggleDetail(i); };
+        card.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') toggleDetail(i); };
 
         card.innerHTML = `
           <div class="rank">#${rank}</div>
           <div class="level-info">
-            <div class="level-title">${level.title || level.url}</div>
-            <div class="level-tags">
-              <span class="tag tag-diff">${diffLabel}</span>
-              ${level.first_completion ? `<span style="font-size:0.68rem;color:var(--muted)">🥇 ${level.first_completion}</span>` : ''}
-            </div>
+            <div class="level-title">${level.title || '(untitled)'}</div>
+            ${level.first_completion
+              ? `<div class="level-sub">🥇 FIRST: ${level.first_completion}</div>`
+              : ''}
           </div>
           <div class="rate-display">
-            <div class="rate-number ${diffCls}">${level.success_rate != null ? level.success_rate : '?'}</div>
-            <div class="rate-label">% SUCCESS</div>
+            <div class="rate-number">${rateStr}</div>
+            <div class="rate-label">SUCCESS RATE</div>
           </div>
         `;
 
-        // DETAIL PANEL
+        // Detail panel
         const panel = document.createElement('div');
         panel.className = 'detail-panel';
         panel.id = 'panel-' + i;
-
-        if (hasError) {
-          panel.innerHTML = `<div style="color:var(--accent);font-size:0.8rem;">⚠ ${level.error}</div>`;
-        } else {
-          panel.innerHTML = `
-            <div class="detail-grid">
-              <div class="detail-stat">
-                <span class="detail-stat-label">⏱ Fastest Time</span>
-                <span class="detail-stat-value">${fmtTime(level.fastest_time)}</span>
-              </div>
-              <div class="detail-stat">
-                <span class="detail-stat-label">💀 Attempts</span>
-                <span class="detail-stat-value">${fmtNum(level.attempts)}</span>
-              </div>
-              <div class="detail-stat">
-                <span class="detail-stat-label">🏆 Completions</span>
-                <span class="detail-stat-value">${fmtNum(level.completions)}</span>
-              </div>
-              <div class="detail-stat">
-                <span class="detail-stat-label">📊 Success Rate</span>
-                <span class="detail-stat-value">${fmtRate(level.success_rate)}</span>
-              </div>
+        panel.innerHTML = `
+          <div class="detail-grid">
+            <div>
+              <div class="detail-stat-label">⏱ FASTEST TIME</div>
+              <div class="detail-stat-value">${fmtTime(level.fastest_time)}</div>
             </div>
-            <div class="detail-actions">
-              <a class="btn btn-primary" href="${level.url}" target="_blank" rel="noopener">VIEW ON REDDIT ↗</a>
+            <div>
+              <div class="detail-stat-label">💀 ATTEMPTS</div>
+              <div class="detail-stat-value">${fmtNum(level.attempts)}</div>
             </div>
-          `;
-        }
+            <div>
+              <div class="detail-stat-label">🏆 COMPLETIONS</div>
+              <div class="detail-stat-value">${fmtNum(level.completions)}</div>
+            </div>
+            <div>
+              <div class="detail-stat-label">📊 SUCCESS RATE</div>
+              <div class="detail-stat-value">${rateStr}</div>
+            </div>
+          </div>
+          <div class="detail-actions">
+            <a class="btn" href="${level.url}" target="_blank" rel="noopener">VIEW ON REDDIT ↗</a>
+          </div>
+        `;
 
         board.appendChild(card);
         board.appendChild(panel);
