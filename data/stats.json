@@ -4,8 +4,15 @@
     "title": "He's beginning to believe",
     "attempts": 10027,
     "completions": 30,
-    "success_rate": 0.30,
     "fastest_time": "11.033",
     "first_completion": "Immediate-Impact2637"
+  },
+  {
+    "url": "https://www.reddit.com/r/RedditGames/comments/1rcrk3m/the_call_of_cthulhu/",
+    "title": "The Call Of C’thulhu",
+    "attempts": 23946,
+    "completions": 2,
+    "fastest_time": "28.016",
+    "first_completion": "TheSamiG"
   }
 ]
