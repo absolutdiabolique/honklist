@@ -323,16 +323,6 @@
       margin-bottom: 0.5rem;
     }
 
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      text-align: center;
-      padding: 1.5rem;
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-    }
-
     /* ── MOBILE ── */
     @media (max-width: 520px) {
       .stats-bar { gap: 1.5rem; }
@@ -353,8 +343,6 @@
 
   <div class="stats-bar">
     <span>LEVELS: <strong id="totalLevels">—</strong></span>
-    <span>HARDEST: <strong id="hardestLevel">—</strong></span>
-    <span>TOTAL ATTEMPTS: <strong id="totalAttempts">—</strong></span>
   </div>
 
   <main class="container">
@@ -363,10 +351,6 @@
       <div class="loading">LOADING DEMONLIST...</div>
     </div>
   </main>
-
-  <footer>
-    HONK DEMONLIST &mdash; STATS BY u/flappy-goose &mdash; NOT AFFILIATED WITH HONK
-  </footer>
 
   <script>
     // Compute success rate as (completions / attempts) * 100,
@@ -432,9 +416,6 @@
 
       // Update stats bar
       document.getElementById('totalLevels').textContent = levels.length;
-      document.getElementById('hardestLevel').textContent = (levels[0]?.title ?? '—').toUpperCase();
-      const totalAttempts = levels.reduce((s, l) => s + (l.attempts ?? 0), 0);
-      document.getElementById('totalAttempts').textContent = fmtNum(totalAttempts);
 
       board.innerHTML = '';
 
@@ -456,8 +437,8 @@
           <div class="rank">#${rank}</div>
           <div class="level-info">
             <div class="level-title">${level.title || '(untitled)'}</div>
-            ${level.first_completion
-              ? `<div class="level-sub">🥇 FIRST: ${level.first_completion}</div>`
+            ${(level.first_completion || level.creator)
+              ? `<div class="level-sub">${level.first_completion ? `🥇 FIRST: ${level.first_completion}` : ''}${level.first_completion && level.creator ? ' &nbsp;·&nbsp; ' : ''}${level.creator ? `✏️ BY: ${level.creator}` : ''}</div>`
               : ''}
           </div>
           <div class="rate-display">
